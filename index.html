@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<title>Phonebook</title>
+</head>
+<body>
+    <h1>Contacts</h1>
+<table id="contacts-table">
+    <tr id="contacts-head">
+        <th>ID</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+        <th>Actions</th>
+    </tr>
+</table>
+
+<form id="contacts-form">
+    <div class="item text">
+        <label>First name:</label>
+        <div class="field"><input type="text" name="firstName" /></div>
+    </div>
+    <div class="item text">
+        <label>Last name:</label>
+        <div class="field"><input type="text" name="lastName" /></div>
+    </div>
+    <div class="item text">
+        <label>Email:</label>
+        <div class="field"><input type="text" name="email" /></div>
+    </div>
+    <div class="item text">
+        <label>Phone Number:</label>
+        <div class="field"><input type="tel" name="phoneNumber" /></div>
+    </div>
+    <div class="button-wrapper">
+        <div class="item button">
+            <div class="field"><input type="button" id="contacts-op-discard" value="Discard" /></div>
+        </div>
+        <div class="item button button-default">
+            <div class="field"><input type="submit" id="contacts-op-save" value="Save" /></div>
+        </div>
+    </div>
+    <input type="hidden" name="id_entry" value="0" />
+</form>
+
+
+</body>
+</html>
