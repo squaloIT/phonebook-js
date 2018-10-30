@@ -23,7 +23,7 @@ function provera() {
   // POST - Ubacivanje podataka ili Neko njihovo menjanje
   // PUT - Ubacivanje podataka ili Neko njihovo menjanje
   // DELETE - Za prosledivanje nekog podatka i brisanje.
-  let nizKontakata;
+
   let noviKorisnik = {
     firstName: imeFuncResult,
     lastName: prezimeFuncResult,
@@ -31,25 +31,9 @@ function provera() {
     phoneNumber: telFuncResult
   };
 
-  $.ajax('storage/contacts.json', {
-    type:'GET',
-    dataType:'json',
-    success: function(podaci, textStatus, jqXHR){
-      console.log(podaci);
-      nizKontakata = podaci;
-      nizKontakata.push(noviKorisnik);
-    }, 
-    error: function(jqXHR, textStatus, err){ // jqXHR jqXHR, String textStatus, String errorThrown 
-      console.error(jqXHR.status); // 200, 404, 500
-      console.error(textStatus);
-      console.error(err);
-    }
-  });
-
-  
   $.ajax('storage/contacts.json',{
     type:'POST',
-    data: nizKontakata,
+    data: noviKorisnik,
     success: function(podaci, textStatus, jqXHR){
       // console.log(podaci);
       if(jqXHR.status==200){
