@@ -1,5 +1,39 @@
 window.onload = function() {
   document.querySelector("#btnSave").addEventListener("click", provera );
+  document.querySelector("#contacts-op-discard").addEventListener("click", resetForm );
+
+  $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts.json', {
+    type:'GET', // MORA PRILIKOM DOHVATANJA
+    dataType:'json', // MORA PRILIKOM DOHVATANJA
+    success: function(contacts, textStatus, jqXHR) {
+      if(jqXHR.status === 200) {
+        console.log(contacts); // Ovde dolaze svi podaci sa servera
+        let tabelaZaIspis = document.querySelector("#contacts-table");
+
+        for(let _idContact in contacts){
+          console.log(contacts[_idContact].email);
+          console.log(contacts[_idContact].firstName);
+          console.log(contacts[_idContact].lastName);
+          console.log(contacts[_idContact].phoneNumber);
+          tabelaZaIspis.innerHTML += `
+          <tr>
+            <td>${contacts[_idContact].firstName}</td>
+            <td>${contacts[_idContact].lastName}</td>
+            <td>${contacts[_idContact].email}</td>
+            <td>${contacts[_idContact].phoneNumber}</td>
+            <td><button onclick="onUpdateContact(${_idContact}, this)" class="btn btn-primary">Update</button></td>
+            <td><button onclick="onDeleteContact(${_idContact}, this)" class="btn btn-danger">Delete</button></td>
+          </tr>`;
+        }
+        
+      }
+    }, 
+    error: function(jqXHR, textStatus, status) {
+      console.error(jqXHR.status); // 200, 404, 500
+      console.error(textStatus);
+      console.error(err);
+    }
+  });
 }
 
 function provera() {
@@ -32,13 +66,15 @@ function provera() {
     phoneNumber: telFuncResult
   };
 
-  $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts.json',{
+  const jsonNoviKorisnik = JSON.stringify(noviKorisnik);
+
+  $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts.json', {
     type:'POST',
-    data: noviKorisnik,
+    data: jsonNoviKorisnik,
     success: function(podaci, textStatus, jqXHR){
-      // console.log(podaci);
       if(jqXHR.status==200){
-        alert("USPESNO UPISANI PODACI");
+        document.querySelector("#ispis-rezultata").textContent = "Uspesno unet kontakt.";
+        resetForm();
       }
     }, 
     error: function(jqXHR, textStatus, err){ // jqXHR jqXHR, String textStatus, String errorThrown 
@@ -47,6 +83,22 @@ function provera() {
       console.error(err);
     }
   });
+}
+function onUpdateContact(button, _id) {
+  console.log(button);
+  console.log(_id);
+  // ! TODO SREDITI DA OVO FUNKCIONISE
+}
+function onDeleteContact(button, _id) {
+  console.log(button);
+  console.log(_id);
+  // ! TODO SREDITI DA OVO FUNKCIONISE
+}
+function resetForm() {
+  document.querySelector("#tbFirstName").value="";
+  document.querySelector("#tbLastName").value="";
+  document.querySelector("#tbEmail").value="";
+  document.querySelector("#tbTel").value="";
 }
 function firstNameRegExpCheck() {
   let imeElement = document.querySelector("#tbFirstName");
