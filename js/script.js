@@ -31,9 +31,11 @@ function provera() {
     phoneNumber: telFuncResult
   };
 
-  $.ajax('storage/contacts.json',{
+  const jsonNoviKorisnik = JSON.stringify(noviKorisnik);
+
+  $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts.json', {
     type:'POST',
-    data: noviKorisnik,
+    data: jsonNoviKorisnik,
     success: function(podaci, textStatus, jqXHR){
       // console.log(podaci);
       if(jqXHR.status==200){
