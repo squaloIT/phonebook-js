@@ -12,6 +12,8 @@
 <body>
     <h1>Contacts</h1>
     <!-- TODO ZAVRSITI IZGLED PRVE STRANICE -->
+    <!-- TODO DISCARD DUGME REALIZOVATI -->
+
     <div class="container">
         <div class="row">
             <div class="col-sm-10 col-md-8 col-lg-6">
@@ -25,49 +27,42 @@
                         <th>Actions</th>
                     </tr>
                 </table>
-                <!-- <h1>TEST</h1> -->
                 <form id="contacts-form">
-
-                    <div class="form-group has-error has-feedback">
+                    <div class="form-group">
                         <label>First name:</label>
                         <input type="text" name="firstName" id="tbFirstName" class="form-control" />
-                        <span class="glyphicon glyphicon-remove form-control-feedback"></span>
-                        <span class="help-block">
-                            <p>The Name field is required.</p>
+                        <span class="glyphicon glyphicon-remove form-control-feedback nevidljiv"></span>
+                        <span class="help-block nevidljiv">
+                            <p>The First Name field is required.</p>
                         </span>
-                        <!-- <span class="help-text">Please enter first name in right format.</span> -->
                     </div>
-                    <div class="form-group has-error has-feedback">
+                    <div class="form-group">
                         <label>Last name:</label>
                         <input type="text" name="lastName" id="tbLastName" class="form-control" />
-                        <span class="glyphicon glyphicon-remove form-control-feedback"></span>
-                        <span class="help-block">
+                        <span class="glyphicon glyphicon-remove form-control-feedback nevidljiv"></span>
+                        <span class="help-block nevidljiv">
                             <p>The Last Name field is required.</p>
                         </span>
-                        <!-- <span class="help-text">Please enter last name in right format.</span> -->
                     </div>
-                    <div class="form-group has-error has-feedback">
+                    <div class="form-group">
                         <label>Email:</label>
-                        <input type="email" name="email" id="tbEmailName" class="form-control" />
-                        <span class="glyphicon glyphicon-remove form-control-feedback"></span>
-                        <span class="help-block">
+                        <input type="email" name="email" id="tbEmail" class="form-control" />
+                        <span class="glyphicon glyphicon-remove form-control-feedback nevidljiv"></span>
+                        <span class="help-block nevidljiv">
                             <p>Please enter email field in right format required.</p>
                         </span>
-                        <!-- <span class="help-text">Please enter email in right format.</span> -->
                     </div>
-                    <div class="form-group has-error has-feedback">
+                    <div class="form-group">
                         <label>Phone Number:</label>
-                        <input type="tel" name="phoneNumber" id="tbTel" class="form-control" />
-                        <span class="glyphicon glyphicon-remove form-control-feedback"></span>
-                        <span class="help-block">
-                            <p>The Name field is required.</p>
+                        <input type="tel" name="phoneNumber" id="tbTel" class="form-control" placeholder="+381669161105" />
+                        <span class="glyphicon glyphicon-remove form-control-feedback nevidljiv"></span>
+                        <span class="help-block nevidljiv">
+                            <p>The phone field is required.</p>
                         </span>
-                        <!-- <span class="help-text">Please enter phone number in right format.</span> -->
                     </div>
-
                     <div class="form-group">
                         <input type="button" class="btn btn-danger" id="contacts-op-discard" value="Discard" />
-                        <input type="submit" class="btn btn-success" id="btnSave" value="Save" />
+                        <input type="button" class="btn btn-success" id="btnSave" value="Save" />
                     </div>
                     <input type="hidden" name="id_entry" value="0" />
             </div>
@@ -75,7 +70,21 @@
     </div>
 
     </form>
-    <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> -->
+    
+    <script src="https://www.gstatic.com/firebasejs/5.5.6/firebase.js"></script>
+    <script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyDs40kNGTS3ic9-e6JY_HXvL-pnsRETJ2w",
+        authDomain: "test-8d9f8.firebaseapp.com",
+        databaseURL: "https://test-8d9f8.firebaseio.com",
+        projectId: "test-8d9f8",
+        storageBucket: "test-8d9f8.appspot.com",
+        messagingSenderId: "458773470171"
+    };
+    firebase.initializeApp(config);
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="js/script.js"></script>
 
 </body>
