@@ -16,15 +16,15 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-sm-10 col-md-8 col-lg-6">
-                <table id="contacts-table">
+            <div class="col-sm-12 col-md-10 col-lg-10">
+                <table id="contacts-table" cellspacing="10px" cellpadding="5px">
                     <tr id="contacts-head">
-                        <th>ID</th>
+                        <!-- <th>ID</th> -->
                         <th>First name</th>
                         <th>Last name</th>
                         <th>Email</th>
                         <th>Phone Number</th>
-                        <th>Actions</th>
+                        <th colspan="2">Actions</th>
                     </tr>
                 </table>
                 <form id="contacts-form">
@@ -65,6 +65,7 @@
                         <input type="button" class="btn btn-success" id="btnSave" value="Save" />
                     </div>
                     <input type="hidden" name="id_entry" value="0" />
+                <h4 id="ispis-rezultata"></h4>
             </div>
         </div>
     </div>
