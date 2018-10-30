@@ -3,6 +3,7 @@ window.onload = function() {
 }
 
 function provera() {
+  alert("!");
   let imeFuncResult = firstNameRegExpCheck();
   if(!imeFuncResult){
     return;
@@ -31,7 +32,7 @@ function provera() {
     phoneNumber: telFuncResult
   };
 
-  $.ajax('storage/contacts.json',{
+  $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts.json',{
     type:'POST',
     data: noviKorisnik,
     success: function(podaci, textStatus, jqXHR){
