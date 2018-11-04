@@ -2,38 +2,65 @@ window.onload = function () {
   document.querySelector("#btnSave").addEventListener("click", provera);
   document.querySelector("#contacts-op-discard").addEventListener("click", resetForm);
 
-  $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts.json', {
-    type: 'GET', // MORA PRILIKOM DOHVATANJA
-    dataType: 'json', // MORA PRILIKOM DOHVATANJA
-    success: function (contacts, textStatus, jqXHR) {
-      if (jqXHR.status === 200) {
-        console.log(contacts); // Ovde dolaze svi podaci sa servera
-        let tabelaZaIspis = document.querySelector("#contacts-table");
 
-        for (let _idContact in contacts) {
-          console.log(contacts[_idContact].email);
-          console.log(contacts[_idContact].firstName);
-          console.log(contacts[_idContact].lastName);
-          console.log(contacts[_idContact].phoneNumber);
-          tabelaZaIspis.innerHTML += `
-          <tr>
-            <td>${contacts[_idContact].firstName}</td>
-            <td>${contacts[_idContact].lastName}</td>
-            <td>${contacts[_idContact].email}</td>
-            <td>${contacts[_idContact].phoneNumber}</td>
-            <td><button onclick="onUpdateContact('${_idContact}', this)" class="btn btn-primary">Update</button></td>
-            <td><button onclick="onDeleteContact('${_idContact}', this)" class="btn btn-danger">Delete</button></td>
-          </tr>`;
-        }
 
+
+firebase.database().ref('contacts').on('value', function(snapshot){
+      console.log(snapshot.val());
+
+      const contacts = snapshot.val();
+      var contactsTable = document.getElementById("contacts-table");
+      contactsTable.innerHTML = "";
+      for (let id in contacts) {
+        console.log(contacts[id]);
+        contactsTable.innerHTML += `
+                <tr>
+                  <td>${contacts[id].firstName}</td>
+                  <td>${contacts[id].lastName}</td>
+                  <td>${contacts[id].email}</td>
+                  <td>${contacts[id].phoneNumber}</td>
+                  <td><button onclick="onUpdateContact('${id}', this)" class="btn btn-primary">Update</button></td>
+                  <td><button onclick="onDeleteContact('${id}', this)" class="btn btn-danger">Delete</button></td>
+                </tr>`;
       }
-    },
-    error: function (jqXHR, textStatus, status) {
-      console.error(jqXHR.status); // 200, 404, 500
-      console.error(textStatus);
-      console.error(err);
-    }
-  });
+      
+  })
+
+
+
+
+  // $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts.json', {
+  //   type: 'GET', // MORA PRILIKOM DOHVATANJA
+  //   dataType: 'json', // MORA PRILIKOM DOHVATANJA
+  //   success: function (contacts, textStatus, jqXHR) {
+  //     if (jqXHR.status === 200) {
+  //       console.log(contacts); // Ovde dolaze svi podaci sa servera
+  //       let tabelaZaIspis = document.querySelector("#contacts-table");
+
+  //       for (let _idContact in contacts) {
+  //         console.log(contacts[_idContact].email);
+  //         console.log(contacts[_idContact].firstName);
+  //         console.log(contacts[_idContact].lastName);
+  //         console.log(contacts[_idContact].phoneNumber);
+  //         tabelaZaIspis.innerHTML += `
+  //         <tr>
+  //           <td>${contacts[_idContact].firstName}</td>
+  //           <td>${contacts[_idContact].lastName}</td>
+  //           <td>${contacts[_idContact].email}</td>
+  //           <td>${contacts[_idContact].phoneNumber}</td>
+  //           <td><button onclick="onUpdateContact('${_idContact}', this)" class="btn btn-primary">Update</button></td>
+  //           <td><button onclick="onDeleteContact('${_idContact}', this)" class="btn btn-danger">Delete</button></td>
+  //         </tr>`;
+  //       }
+
+  //     }
+  //   },
+  //   error: function (jqXHR, textStatus, status) {
+  //     console.error(jqXHR.status); // 200, 404, 500
+  //     console.error(textStatus);
+  //     console.error(err);
+  //   }
+  // });
 }
 
 function provera() {
@@ -66,91 +93,133 @@ function provera() {
     phoneNumber: telFuncResult
   };
 
-  const jsonNoviKorisnik = JSON.stringify(noviKorisnik);
   var hiddenContact = document.getElementById("id_entry").value;
-  if (hiddenContact != 0) { 
-    $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts/' + hiddenContact + '.json', {
-      type:'PATCH',
-      data:jsonNoviKorisnik,
-      success: function (contact, textStatus, jqXHR) {
-        if (jqXHR.status == 200) {
-          document.getElementById("ispis-rezultata").textContent = "bravo editovao si";
-        }
-      },
-      error: function (jqXHR, textStatus, err) { // jqXHR jqXHR, String textStatus, String errorThrown 
-        console.error(jqXHR.status); // 200, 404, 500
-        console.error(textStatus);
-        console.error(err);
-      }
-    });
-  }
 
+  if (hiddenContact != 0 ) {
+    firebase.database().ref("contacts").push(noviKorisnik, function(_err) {
+      if (_err) {
+        var greska = document.getElementById("ispis-rezultata");
+        greska.textContent = "nece";
+      }
+      else {
+        alert("Radi");
+      }
+  });
+    
+  }
 
   else {
-    $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts.json', {
-      type: 'POST',
-      data: jsonNoviKorisnik,
-      success: function (podaci, textStatus, jqXHR) {
-        if (jqXHR.status == 200) {
-          document.querySelector("#ispis-rezultata").textContent = "Uspesno unet kontakt.";
-          resetForm();
-        }
-      },
-      error: function (jqXHR, textStatus, err) { // jqXHR jqXHR, String textStatus, String errorThrown 
-        console.error(jqXHR.status); // 200, 404, 500
-        console.error(textStatus);
-        console.error(err);
+    firebase.database().ref("contacts/" + hiddenContact.value).update(noviKorisnik, function(_err) {
+      console.log(hiddenContact.value);
+      console.log(noviKorisnik);
+      if (_err) {
+        var greska = document.getElementById("ispis-rezultata");
+        greska.textContent = "opet nece";
       }
-    });
+      else {
+        alert("Radi nesto");
+      }
+  });
   }
+
+  
+
+  // const jsonNoviKorisnik = JSON.stringify(noviKorisnik);
+  // var hiddenContact = document.getElementById("id_entry").value;
+  // if (hiddenContact != 0) { 
+  //   $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts/' + hiddenContact + '.json', {
+  //     type:'PATCH',
+  //     data:jsonNoviKorisnik,
+  //     success: function (contact, textStatus, jqXHR) {
+  //       if (jqXHR.status == 200) {
+  //         document.getElementById("ispis-rezultata").textContent = "bravo editovao si";
+  //       }
+  //     },
+  //     error: function (jqXHR, textStatus, err) { // jqXHR jqXHR, String textStatus, String errorThrown 
+  //       console.error(jqXHR.status); // 200, 404, 500
+  //       console.error(textStatus);
+  //       console.error(err);
+  //     }
+  //   });
+  // }
+
+
+  // else {
+  //   $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts.json', {
+  //     type: 'POST',
+  //     data: jsonNoviKorisnik,
+  //     success: function (podaci, textStatus, jqXHR) {
+  //       if (jqXHR.status == 200) {
+  //         document.querySelector("#ispis-rezultata").textContent = "Uspesno unet kontakt.";
+  //         resetForm();
+  //       }
+  //     },
+  //     error: function (jqXHR, textStatus, err) { // jqXHR jqXHR, String textStatus, String errorThrown 
+  //       console.error(jqXHR.status); // 200, 404, 500
+  //       console.error(textStatus);
+  //       console.error(err);
+  //     }
+  //   });
+  // }
 
 
 }
 function onUpdateContact(_id, button) {
   console.log(button);
   console.log(_id);
-  $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts/' + _id + '.json', {
-    type: 'GET',
-    dataType: 'json',
-    success: function (contact, textStatus, jqXHR) {
-      if (jqXHR.status == 200) {
-        document.querySelector("#tbFirstName").value = contact.firstName;
-        document.querySelector("#tbLastName").value = contact.lastName;
-        document.querySelector("#tbEmail").value = contact.email;
-        document.querySelector("#tbTel").value = contact.phoneNumber;
-        document.querySelector("#btnSave").value = "edit";
-        document.querySelector("#id_entry").value = _id;
-        var bravoOkvir = button.parentElement.parentElement;
-        bravoOkvir.style.border = "2px solid green"
-      }
-    },
-    error: function (jqXHR, textStatus, err) { // jqXHR jqXHR, String textStatus, String errorThrown 
-      console.error(jqXHR.status); // 200, 404, 500
-      console.error(textStatus);
-      console.error(err);
-    }
-  });
+  firebase.database().ref("contacts/" + _id).once("value", function(snapshot){
+    var contact = snapshot.val();
+    document.querySelector("#tbFirstName").value = contact.firstName;
+          document.querySelector("#tbLastName").value = contact.lastName;
+          document.querySelector("#tbEmail").value = contact.email;
+          document.querySelector("#tbTel").value = contact.phoneNumber;
+          document.querySelector("#btnSave").value = "edit";
+          document.querySelector("#id_entry").value = _id;
+
+  })
+  // $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts/' + _id + '.json', {
+  //   type: 'GET',
+  //   dataType: 'json',
+  //   success: function (contact, textStatus, jqXHR) {
+  //     if (jqXHR.status == 200) {
+  //       document.querySelector("#tbFirstName").value = contact.firstName;
+  //       document.querySelector("#tbLastName").value = contact.lastName;
+  //       document.querySelector("#tbEmail").value = contact.email;
+  //       document.querySelector("#tbTel").value = contact.phoneNumber;
+  //       document.querySelector("#btnSave").value = "edit";
+  //       document.querySelector("#id_entry").value = _id;
+  //       var bravoOkvir = button.parentElement.parentElement;
+  //       bravoOkvir.style.border = "2px solid green"
+  //     }
+  //   },
+  //   error: function (jqXHR, textStatus, err) { // jqXHR jqXHR, String textStatus, String errorThrown 
+  //     console.error(jqXHR.status); // 200, 404, 500
+  //     console.error(textStatus);
+  //     console.error(err);
+  //   }
+  // });
   // ! TODO SREDITI DA OVO FUNKCIONISE
 }
 function onDeleteContact(_id, button) {
   console.log(button);
   console.log(_id);
-  $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts/' + _id + '.json', {
-    type: 'DELETE',
-    dataType: 'json',
-    success: function (contact, textStatus, jqXHR) {
-      if (jqXHR.status == 200) {
-        document.getElementById("ispis-rezultata").textContent = "Izbrisano";
-        var red = button.parentElement.parentElement;
-        red.style.display = "none";
-      }
-    },
-    error: function (jqXHR, textStatus, err) { // jqXHR jqXHR, String textStatus, String errorThrown 
-      console.error(jqXHR.status); // 200, 404, 500
-      console.error(textStatus);
-      console.error(err);
-    }
-  });
+    firebase.database().ref("contacts/" + _id).remove();
+  // $.ajax('https://mfp-phonebook-js.firebaseio.com/contacts/' + _id + '.json', {
+  //   type: 'DELETE',
+  //   dataType: 'json',
+  //   success: function (contact, textStatus, jqXHR) {
+  //     if (jqXHR.status == 200) {
+  //       document.getElementById("ispis-rezultata").textContent = "Izbrisano";
+  //       var red = button.parentElement.parentElement;
+  //       red.style.display = "none";
+  //     }
+  //   },
+  //   error: function (jqXHR, textStatus, err) { // jqXHR jqXHR, String textStatus, String errorThrown 
+  //     console.error(jqXHR.status); // 200, 404, 500
+  //     console.error(textStatus);
+  //     console.error(err);
+  //   }
+  // });
 
   // ! TODO SREDITI DA OVO FUNKCIONISE
 }
@@ -248,3 +317,8 @@ function emailRegExpCheck() {
     return emailElement.value;
   }
 }
+
+/**********************************************
+ * **************** Bez ajaxa  ***************/
+
+ 
